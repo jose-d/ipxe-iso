@@ -34,9 +34,9 @@ set ks_url ${http_server2_url}/repo/koios-ks/ks8.cfg
 echo iPXE boot agent: Requesting IP from DHCP
 dhcp
 
-ifconf -c ipv6 net0
-ifconf -c ipv6 net1
-ifconf -c ipv6 net2
+ifconf -c ipv6 net0 || echo "net0 ipv6 N/A or iface is down"
+ifconf -c ipv6 net1 || echo "net1 ipv6 N/A or iface is down"
+ifconf -c ipv6 net2 || echo "net2 ipv6 N/A or iface is down"
 
 echo iPXE boot agent: attempting to start centos kickstart installation..
 echo net0 IP address: ${net0/ip} ; echo Subnet mask: ${net0/netmask}; echo ${net0/ipv6}
