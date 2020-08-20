@@ -35,14 +35,12 @@ echo iPXE boot agent: Requesting IP from DHCP
 dhcp
 
 ifconf -c ipv6 net0 || echo "net0 ipv6 N/A or iface is down"
-ifconf -c ipv6 net1 || echo "net1 ipv6 N/A or iface is down"
-ifconf -c ipv6 net2 || echo "net2 ipv6 N/A or iface is down"
+
+echo net0 IP address: ${net0/ip} ; echo Subnet mask: ${net0/netmask}; echo ${net0/ipv6}
+
+sleep 1
 
 echo iPXE boot agent: attempting to start centos kickstart installation..
-echo net0 IP address: ${net0/ip} ; echo Subnet mask: ${net0/netmask}; echo ${net0/ipv6}
-echo net1 IP address: ${net1/ip} ; echo Subnet mask: ${net1/netmask}; echo ${net1/ipv6}
-echo net2 IP address: ${net2/ip} ; echo Subnet mask: ${net2/netmask}; echo ${net2/ipv6}
-sleep 1
 
 initrd ${initrd_url}
 boot ${vmlinuz_url} inst.repo=${inst.repo_url} inst.ks=${ks_url} inst.cmdline inst.text selinux=0 initrd=initrd.img
