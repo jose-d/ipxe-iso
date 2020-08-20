@@ -2,8 +2,6 @@
 
 # config
 
-# Centos 7
-
 set URL_kickstart_centos7 ks=http://172.16.120.11/repo/ks.cfg
 set reposerver http://172.16.120.10
 set URL_initrd_centos7 ${reposerver}/centos/7/os/x86_64/images/pxeboot/initrd.img
@@ -11,20 +9,27 @@ set URL_vmlinuz_centos7 ${reposerver}/centos/7/os/x86_64/images/pxeboot/vmlinuz
 set URL_installsource_centos7 ${reposerver}/centos/7/os/x86_64/
 set IP_syslog_server 172.16.120.1
 
-# Centos 8
-
-# TBD
-
-
 :menu
 
 menu Select action
 
+item kickstart_centos8 Kickstart Centos8 (ethernet)
 item kickstart_centos7 Kickstart Centos7 (ethernet)
 item ipxe_shell iPXE shell
 item exit call exit (go to EFI setup)
 
-choose --default kickstart_centos7 --timeout 5000 action && goto ${action} # wait 5 sec
+choose --default kickstart_centos8 --timeout 5000 action && goto ${action} # wait 5 sec
+
+:kickstart_centos8
+
+echo iPXE boot agent: Requesting IP from DHCP
+dhcp
+echo iPXE boot agent: attempting to start centos kickstart installation..
+sleep 1
+
+initrd http://172.16.120.10/centos8/current/BaseOS/x86_64/os/images/pxeboot/initrd.img
+boot http://172.16.120.10/centos8/current/BaseOS/x86_64/os/images/pxeboot/vmlinuz inst.repo=http://172.16.120.10/centos8/current/BaseOS/x86_64/os/
+#boot ${URL_vmlinuz_centos7} repo=${URL_installsource_centos7} ${URL_kickstart_centos7} initrd=initrd.img console=tty0 console=ttyS0,115200 inst.syslog=${IP_syslog_server}
 
 :kickstart_centos7
 
