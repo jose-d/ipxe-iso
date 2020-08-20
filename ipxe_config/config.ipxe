@@ -28,7 +28,7 @@ echo iPXE boot agent: attempting to start centos kickstart installation..
 sleep 1
 
 initrd http://172.16.120.10/centos8/current/BaseOS/x86_64/os/images/pxeboot/initrd.img
-boot http://172.16.120.10/centos8/current/BaseOS/x86_64/os/images/pxeboot/vmlinuz inst.repo=http://172.16.120.10/centos8/current/BaseOS/x86_64/os/
+boot http://172.16.120.10/centos8/current/BaseOS/x86_64/os/images/pxeboot/vmlinuz inst.repo=http://172.16.120.10/centos8/current/BaseOS/x86_64/os/ initrd=initrd.img
 #boot ${URL_vmlinuz_centos7} repo=${URL_installsource_centos7} ${URL_kickstart_centos7} initrd=initrd.img console=tty0 console=ttyS0,115200 inst.syslog=${IP_syslog_server}
 
 :kickstart_centos7
