@@ -34,6 +34,9 @@ set ks_url ${http_server2_url}/repo/koios-ks/ks8.cfg
 echo iPXE boot agent: Requesting IP from DHCP
 dhcp
 echo iPXE boot agent: attempting to start centos kickstart installation..
+echo IP address: ${net0/ip} ; echo Subnet mask: ${net0/netmask}
+echo IP address: ${net1/ip} ; echo Subnet mask: ${net1/netmask}
+echo IP address: ${net2/ip} ; echo Subnet mask: ${net2/netmask}
 sleep 1
 
 initrd ${initrd_url}
