@@ -45,7 +45,7 @@ echo net2 IP address: ${net2/ip} ; echo Subnet mask: ${net2/netmask}; echo ${net
 sleep 1
 
 initrd ${initrd_url}
-boot ${vmlinuz_url} inst.repo=${inst.repo_url} ${ks_url} initrd=initrd.img
+boot ${vmlinuz_url} inst.repo=${inst.repo_url} inst.ks=${ks_url} inst.cmdline inst.text selinux=0 initrd=initrd.img
 
 :kickstart_centos7
 
