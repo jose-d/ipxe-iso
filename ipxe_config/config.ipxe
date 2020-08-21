@@ -22,6 +22,8 @@ choose --default kickstart_centos8 --timeout 5000 action && goto ${action} # wai
 
 :kickstart_centos8
 
+# doc: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/performing_an_advanced_rhel_installation/kickstart-and-advanced-boot-options_installing-rhel-as-an-experienced-user
+
 set http_server_url http://172.16.120.10
 set http_server2_url http://172.16.120.11
 set image_path centos8/current/BaseOS/x86_64/os/images/pxeboot
@@ -43,7 +45,7 @@ sleep 1
 echo iPXE boot agent: attempting to start centos kickstart installation..
 
 initrd ${initrd_url}
-boot ${vmlinuz_url} inst.repo=${inst.repo_url} inst.ks=${ks_url} inst.cmdline inst.text selinux=0 inst.nokill inst.nodmraid initrd=initrd.img
+boot ${vmlinuz_url} inst.repo=${inst.repo_url} inst.ks=${ks_url} inst.cmdline inst.text selinux=0 inst.nodmraid initrd=initrd.img
 
 :kickstart_centos7
 
