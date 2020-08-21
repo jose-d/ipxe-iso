@@ -26,7 +26,8 @@ choose --default kickstart_centos8 --timeout 5000 action && goto ${action} # wai
 
 set http_server_url http://172.16.120.10
 set http_server2_url http://172.16.120.11
-set image_path centos8/current/BaseOS/x86_64/os/images/pxeboot
+#set image_path centos8/current/BaseOS/x86_64/os/images/pxeboot
+set image_path centos8/netboot
 
 set initrd_url ${http_server_url}/${image_path}/initrd.img
 set vmlinuz_url ${http_server_url}/${image_path}/vmlinuz
