@@ -46,7 +46,7 @@ sleep 1
 echo iPXE boot agent: attempting to start centos kickstart installation..
 
 initrd ${initrd_url}
-boot ${vmlinuz_url} inst.repo=${inst.repo_url} inst.ks=${ks_url} inst.cmdline inst.text selinux=0 inst.nodmraid initrd=initrd.img
+boot ${vmlinuz_url} inst.repo=${inst.repo_url} inst.ks=${ks_url} inst.cmdline inst.text selinux=0 inst.nodmraid initrd=initrd.img console=tty0 console=ttyS0,115200
 
 :kickstart_centos7
 
