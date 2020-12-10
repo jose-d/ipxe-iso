@@ -55,6 +55,7 @@ boot ${vmlinuz_url} inst.repo=${inst.repo_url} inst.ks=${ks_url} inst.cmdline in
 echo iPXE boot agent: Requesting IP from DHCP
 dhcp
 echo iPXE boot agent: attempting to start centos kickstart installation..
+
 sleep 1
 
 # load ramdisk, kernel and boot
