@@ -24,29 +24,8 @@ choose --default kickstart_centos8 --timeout 5000 action && goto ${action} # wai
 
 # doc: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/performing_an_advanced_rhel_installation/kickstart-and-advanced-boot-options_installing-rhel-as-an-experienced-user
 
-set http_boot_server_url http://172.16.120.10
-set http_server_url http://[2001:470:59b5:aaaa::10]
-set http_server2_url http://[2001:470:59b5:aaaa::11]
-set image_path centos8/netboot
-
-set initrd_url ${http_boot_server_url}/${image_path}/initrd.img
-set vmlinuz_url ${http_boot_server_url}/${image_path}/vmlinuz
-set inst.repo_url ${http_server_url}/centos8/8-stream/BaseOS/
-set ks_url ${http_server2_url}/repo/koios-ks/ks8.cfg
-
-echo iPXE boot agent: Requesting IP from DHCP
 dhcp
-
-ifconf -c ipv6 net0 || echo "net0 ipv6 N/A or iface is down"
-
-echo net0 IP address: ${net0/ip} ; echo Subnet mask: ${net0/netmask}; echo ${net0/ipv6}
-
-sleep 1
-
-echo iPXE boot agent: attempting to start centos kickstart installation..
-
-initrd ${initrd_url}
-boot ${vmlinuz_url} inst.repo=${inst.repo_url} inst.ks=${ks_url} inst.cmdline inst.text selinux=0 inst.nodmraid initrd=initrd.img ip=eno1:dhcp ip=ib0:auto6 console=tty0 console=ttyS0,115200 inst.syslog=${IP_syslog_server}
+chain http://172.16.120.10/ipxe/c8.ipxe
 
 :kickstart_centos7
 
