@@ -127,6 +127,15 @@ jobs:
           asset_path: ${{ github.workspace }}/artifacts/IPXEISO.iso
           asset_name: IPXEISO.iso
           asset_content_type: application/octet-stream
+      - name: Upload efi image as second "asset"
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/ipxe/src/bin-x86_64-efi/ipxe.efi
+          asset_name: ipxe.efi
+          asset_content_type: application/octet-stream
   delete-artifacts:
     name: remove artifacts
     runs-on: ubuntu-latest
