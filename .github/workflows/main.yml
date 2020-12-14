@@ -1,4 +1,4 @@
-on: [push]
+on: [push] #foo
 jobs:
   make-ipxe:
     name: make ipxe
