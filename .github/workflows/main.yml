@@ -2,7 +2,7 @@ on: [push]
 jobs:
   make-ipxe:
     name: make ipxe
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     container: docker://centos:7.8.2003
     steps:
       - name: checkout self/this
@@ -38,7 +38,7 @@ jobs:
           path: ${{ github.workspace }}/ipxe/src/bin-x86_64-efi/ipxe.efi
   create-vfat-img:
     name: create empty vfat image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: create-vfat-img
         run: |
@@ -54,7 +54,7 @@ jobs:
           path: ${{ github.workspace }}/output/efi.img
   brew-efi-binary:
     name: Brew EFI binary
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: [make-ipxe,create-vfat-img]
     steps:
       - name: install-deps
