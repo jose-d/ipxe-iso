@@ -105,6 +105,11 @@ jobs:
         with:
           name: IPXEISO.iso
           path: ${{ github.workspace }}/artifacts
+      - name: download ipxe.efi as artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ipxe.efi
+          path: ${{ github.workspace }}/artifacts
       - name: Create release string from date
         id: date # we need id to be able parse the result as steps.date.outputs.date
         run: echo "::set-output name=date::$(date +'%Y%m%d_%H%M%S')"
@@ -133,7 +138,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/ipxe/src/bin-x86_64-efi/ipxe.efi
+          asset_path: ${{ github.workspace }}/artifacts/ipxe.efi
           asset_name: ipxe.efi
           asset_content_type: application/octet-stream
   delete-artifacts:
