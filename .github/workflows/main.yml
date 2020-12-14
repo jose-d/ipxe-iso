@@ -40,7 +40,14 @@ jobs:
     name: create empty vfat image
     runs-on: ubuntu-20.04
     steps:
+      - name: cache empty vfat image
+        id: cache_empty_vfat_image
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/output/efi.img
+          key: ${{ runner.os }}-emptyefi.img
       - name: create-vfat-img
+        if: steps.cache_empty_vfat_image.outputs.cache-hit != 'true'
         run: |
           cd ${GITHUB_WORKSPACE}
           mkdir output
