@@ -1,5 +1,5 @@
 # ipxe-iso
-Build your own ipxe-iso using GitHub actions!
+Build your own [ipxe](https://github.com/ipxe/ipxe)-iso using GitHub actions!
 
 ## how-to:
 
