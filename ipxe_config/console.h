@@ -53,7 +53,8 @@ FILE_LICENCE ( GPL2_OR_LATER_OR_UBDL );
 //#define	CONSOLE_PC_KBD		/* Direct access to PC keyboard */
 
 /* Keyboard map (available maps in hci/keymap/) */
-#define	KEYBOARD_MAP	us
+#define	KEYBOARD_MAP	cz
+//#define	KEYBOARD_MAP	us
 
 /* Control which syslog() messages are generated.
  *
