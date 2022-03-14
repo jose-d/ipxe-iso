@@ -18,9 +18,30 @@ choose --default rocky8 --timeout 10000 action && goto ${action} # wait 10 sec
 
 # doc: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/performing_an_advanced_rhel_installation/kickstart-and-advanced-boot-options_installing-rhel-as-an-experienced-user
 
-dhcp
-#chain http://172.16.120.10/ipxe/c8.ipxe
-chain https://fzu.cz/~jose/boot/rocky8.ipxe
+ifconf -c ipv6 net0 || echo "net0 ipv6 N/A or iface is down"
+sleep 1
+echo net0 IP address: ${net0/ip} ; echo Subnet mask: ${net0/netmask}; echo ${net0/ipv6}
+set linux_bootdev eno1
+
+set initrd_url https://ftp.sh.cvut.cz/rocky/8.5/BaseOS/x86_64/os/images/pxeboot/initrd.img
+set vmlinuz_url https://ftp.sh.cvut.cz/rocky/8.5/BaseOS/x86_64/os/images/pxeboot/vmlinuz
+set inst.repo_url https://ftp.sh.cvut.cz/rocky/8.5/BaseOS/x86_64/os/
+set ks_url https://fzu.cz/~jose/boot/rocky001.ks
+
+echo Inventory - user-class
+echo ${user-class}
+echo Inventory - manufacturer
+echo ${manufacturer}
+echo Inventory - product
+echo ${product}
+
+initrd ${initrd_url}
+boot ${vmlinuz_url} inst.nompath inst.repo=${inst.repo_url} inst.ks=${ks_url} inst.cmdline inst.text inst.selinux=0 inst.nodmraid initrd=initrd.img console=tty0 modprobe.blacklist=ast ip=${linux_bootdev}:dhcp
+
+
+
+
+
 
 :ipxe_shell
 
