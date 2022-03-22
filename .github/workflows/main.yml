@@ -1,0 +1,160 @@
+on: [push] #foo
+jobs:
+  make-ipxe:
+    name: make ipxe
+    runs-on: ubuntu-20.04
+    container: docker://centos:7.8.2003
+    steps:
+      - name: checkout self/this
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          path: self
+      - name: checkout ipxe/ipxe github repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          #ref: v1.20.1 #try to go with latest
+          repository: ipxe/ipxe
+          path: ipxe
+      - name: install ipxe build deps into container
+        run: |
+          yum -y groups mark convert
+          yum -y groupinstall 'Development Tools'
+          yum -y install wget curl git
+      - name: build ipxe
+        run: |
+          self_root="${GITHUB_WORKSPACE}/self"
+          ipxe_root="${GITHUB_WORKSPACE}/ipxe"
+          cp ${self_root}/ipxe_config/config.ipxe ${ipxe_root}/src/
+          cp ${self_root}/ipxe_config/general.h ${ipxe_root}/src/config/
+          cp ${self_root}/ipxe_config/console.h ${ipxe_root}/src/config/
+          cd ${ipxe_root}/src/
+          make bin-x86_64-efi/ipxe.efi EMBED=config.ipxe DEBUG=tls -j2
+      - name: upload ipxe.efi as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ipxe.efi
+          path: ${{ github.workspace }}/ipxe/src/bin-x86_64-efi/ipxe.efi
+  create-vfat-img:
+    name: create empty vfat image
+    runs-on: ubuntu-20.04
+    steps:
+      - name: cache empty vfat image
+        id: cache_empty_vfat_image
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/output/efi.img
+          key: ${{ runner.os }}-emptyefi.img
+      - name: create-vfat-img
+        if: steps.cache_empty_vfat_image.outputs.cache-hit != 'true'
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          mkdir output
+          BOOT_IMG="${GITHUB_WORKSPACE}/output/efi.img"
+          sudo truncate -s 8M $BOOT_IMG
+          sudo mkfs.vfat $BOOT_IMG
+      - name: upload efi.img as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: efi.img
+          path: ${{ github.workspace }}/output/efi.img
+  brew-efi-binary:
+    name: Brew EFI binary
+    runs-on: ubuntu-20.04
+    needs: [make-ipxe,create-vfat-img]
+    steps:
+      - name: install-deps
+        run: |
+          sudo apt install xorriso dosfstools coreutils
+      - name: download ipxe.efi as artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ipxe.efi
+          path: ${{ github.workspace }}/artifacts
+      - name: download efi.img as artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: efi.img
+          path: ${{ github.workspace }}/artifacts
+      - name: brew-efi
+        run: |
+          BOOT_IMG_DATA="${GITHUB_WORKSPACE}/temp"
+          EFI_BINARY="${GITHUB_WORKSPACE}/artifacts/ipxe.efi"
+          ISOROOT="${GITHUB_WORKSPACE}/isoroot"
+          cd ${GITHUB_WORKSPACE}
+          mkdir temp isoroot output
+          ls -lah ${GITHUB_WORKSPACE}/artifacts/
+          sudo mount ${GITHUB_WORKSPACE}/artifacts/efi.img ${BOOT_IMG_DATA}
+          sudo mkdir -p ${BOOT_IMG_DATA}/efi/boot
+          sudo chmod -R 755 ${BOOT_IMG_DATA}/efi/boot
+          sudo cp ${EFI_BINARY} ${BOOT_IMG_DATA}/efi/boot/bootx64.efi
+          sudo umount ${BOOT_IMG_DATA}
+          mkdir -p ${ISOROOT}/boot/grub
+          cp ${GITHUB_WORKSPACE}/artifacts/efi.img ${ISOROOT}/boot/grub/efi.img
+      - name: brew ISO
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          ISO_PATH="${GITHUB_WORKSPACE}/output/IPXEISO.iso"
+          xorriso -as mkisofs -iso-level 3 -r -V 'IPXEISO' -J -joliet-long -e boot/grub/efi.img -partition_cyl_align all -o ${ISO_PATH} -no-emul-boot ${GITHUB_WORKSPACE}/isoroot
+      - name: upload ISO as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: IPXEISO.iso
+          path: ${{ github.workspace }}/output/IPXEISO.iso  
+  upload-iso-to-releases:
+    name: upload ISO to project releases
+    runs-on: ubuntu-latest
+    needs: [brew-efi-binary]
+    steps:
+      - name: download IPXEISO.iso as artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: IPXEISO.iso
+          path: ${{ github.workspace }}/artifacts
+      - name: download ipxe.efi as artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ipxe.efi
+          path: ${{ github.workspace }}/artifacts
+      - name: Create release string from date
+        id: date # we need id to be able parse the result as steps.date.outputs.date
+        run: echo "::set-output name=date::$(date +'%Y%m%d_%H%M%S')"
+      - name: Create release
+        id: create_release # we need id to see the the created release in steps.create_release.outputs.upload_url
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.date.outputs.date }}
+          release_name: Release ${{ steps.date.outputs.date }}
+          draft: false
+          prerelease: false
+      - name: Upload release "asset"
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/artifacts/IPXEISO.iso
+          asset_name: IPXEISO.iso
+          asset_content_type: application/octet-stream
+      - name: Upload efi image as second "asset"
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/artifacts/ipxe.efi
+          asset_name: ipxe.efi
+          asset_content_type: application/octet-stream
+  delete-artifacts:
+    name: remove artifacts
+    runs-on: ubuntu-latest
+    needs: [upload-iso-to-releases]
+    steps:
+      - uses: kolpav/purge-artifacts-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          expire-in: 0days # Setting this to 0 will delete all artifacts        
+          

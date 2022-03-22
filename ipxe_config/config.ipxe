@@ -1,0 +1,36 @@
+#!ipxe
+
+:menu
+
+menu Select action
+
+item rocky8 Kickstart Rocky8 (limba)
+item ipxe_shell iPXE shell
+item exit call exit (go to EFI setup)
+
+choose --default rocky8 --timeout 7000 action && goto ${action} # wait 7sec
+
+:rocky8
+
+# doc: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/performing_an_advanced_rhel_installation/kickstart-and-advanced-boot-options_installing-rhel-as-an-experienced-user
+
+# ifconf -c ipv6 net0 || echo "net0 ipv6 N/A or iface is down"
+
+dhcp
+
+sleep 3
+
+echo net0 IP address: ${net0/ip} ; echo Subnet mask: ${net0/netmask}; echo ${net0/ipv6}
+set linux_bootdev eno1
+
+chain http://supweb1.${domain}:8080/boot/r8.ipxe
+
+sleep 3
+
+:ipxe_shell
+
+shell
+
+:exit
+
+exit
