@@ -3,7 +3,7 @@ jobs:
   make-ipxe:
     name: make ipxe
     runs-on: ubuntu-20.04
-    container: docker://centos:7.8.2003
+    container: docker://centos:7.9.2009
     steps:
       - name: checkout self/this
         uses: actions/checkout@v2
