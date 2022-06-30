@@ -22,7 +22,7 @@ echo net0 IP address: ${net0/ip} ; echo Subnet mask: ${net0/netmask}; echo ${net
 set linux_bootdev eno1
 
 #chain http://supweb1.${domain}:8080/boot/r8.ipxe
-chain https://172.16.120.10/ipxe/c8.ipxe
+chain http://172.16.120.10/ipxe/c8.ipxe
 
 sleep 3
 
