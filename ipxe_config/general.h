@@ -166,7 +166,7 @@ FILE_LICENCE ( GPL2_OR_LATER_OR_UBDL );
  * Virtual network devices
  *
  */
-#define VNIC_IPOIB		/* Infiniband IPoIB virtual NICs */
+//#define VNIC_IPOIB		/* Infiniband IPoIB virtual NICs */
 //#define VNIC_XSIGO		/* Infiniband Xsigo virtual NICs */
 
 /*
