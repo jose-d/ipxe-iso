@@ -14,11 +14,13 @@ choose --default rocky8 --timeout 5000 action && goto ${action}
 
 # doc: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/performing_an_advanced_rhel_installation/kickstart-and-advanced-boot-options_installing-rhel-as-an-experienced-user
 
-set bootdev net0
-isset ${product} && iseq ${product} RS700A-E11-RS12U && set bootdev net2 ||
+#set bootdev net0
+#isset ${product} && iseq ${product} RS700A-E11-RS12U && set bootdev net2 ||
 
-echo bootdev: ${bootdev}
-dhcp ${bootdev}
+#echo bootdev: ${bootdev}
+#dhcp ${bootdev}
+ifstat
+ifconf --timeout 8000
 
 sleep 2
 
