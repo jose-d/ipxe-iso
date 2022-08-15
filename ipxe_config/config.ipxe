@@ -4,30 +4,25 @@
 
 menu Select action
 
-item rocky8 Kickstart Rocky8 (limba)
+item rocky8 Kickstart Rocky8 (repo1)
 item ipxe_shell iPXE shell
 item exit call exit (go to EFI setup)
 
-choose --default rocky8 --timeout 5000 action && goto ${action}
+choose --default rocky8 --timeout 1000 action && goto ${action}
 
 :rocky8
 
 # doc: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/performing_an_advanced_rhel_installation/kickstart-and-advanced-boot-options_installing-rhel-as-an-experienced-user
 
-#set bootdev net0
-#isset ${product} && iseq ${product} RS700A-E11-RS12U && set bootdev net2 ||
-
-#echo bootdev: ${bootdev}
-#dhcp ${bootdev}
 ifstat
 ifconf --timeout 8000
 
-sleep 2
+sleep 1
 
 #chain http://supweb1.${domain}:8080/boot/r8.ipxe
-chain http://172.16.120.10/ipxe/c8.ipxe
+chain https://repo.phoebe.ceico.cz/boot/boot.ipxe
 
-sleep 2
+sleep 1
 
 :ipxe_shell
 
