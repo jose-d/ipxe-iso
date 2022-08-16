@@ -20,7 +20,7 @@ ifconf --timeout 8000
 sleep 1
 
 #chain http://supweb1.${domain}:8080/boot/r8.ipxe
-chain https://repo.phoebe.ceico.cz/boot/boot.ipxe
+chain http://repo.phoebe.ceico.cz/boot/boot.ipxe
 
 sleep 1
 
