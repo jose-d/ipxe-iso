@@ -15,6 +15,10 @@ choose --default rocky8 --timeout 1000 action && goto ${action}
 # doc: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/performing_an_advanced_rhel_installation/kickstart-and-advanced-boot-options_installing-rhel-as-an-experienced-user
 
 ifstat
+sleep 2
+
+ifopen
+sleep 2
 
 :retry
 
