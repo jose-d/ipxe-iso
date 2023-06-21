@@ -8,7 +8,7 @@ item rocky8 Kickstart Rocky8 (repo1)
 item ipxe_shell iPXE shell
 item exit call exit (go to EFI setup)
 
-choose --default rocky8 --timeout 1000 action && goto ${action}
+choose --default rocky8 --timeout 1500 action && goto ${action}
 
 :rocky8
 
