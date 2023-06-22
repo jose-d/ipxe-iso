@@ -31,7 +31,7 @@ jobs:
           cp ${self_root}/ipxe_config/console.h ${ipxe_root}/src/config/
           cd ${ipxe_root}/src/
           #make bin-x86_64-efi/ipxe.efi EMBED=config.ipxe -j2
-          make bin-x86_64-efi/ipxe.efi EMBED=config.ipxe DEBUG=http -j2
+          make bin-x86_64-efi/snponly.efi EMBED=config.ipxe -j2
       - name: upload ipxe.efi as artifact
         uses: actions/upload-artifact@v2
         with:
